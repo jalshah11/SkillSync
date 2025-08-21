@@ -1,0 +1,33 @@
+{
+  "version": "0.2.0",
+  "compounds": [
+    {
+      "name": "Run Client + Server",
+      "configurations": ["Debug Server", "Debug Client"],
+      "preLaunchTask": "dev:all"
+    }
+  ],
+  "configurations": [
+    {
+      "name": "Debug Server",
+      "type": "node",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/server",
+      "runtimeExecutable": "npm",
+      "runtimeArgs": ["run", "dev"],
+      "console": "integratedTerminal",
+      "skipFiles": ["<node_internals>/**"],
+      "envFile": "${workspaceFolder}/server/.env"
+    },
+    {
+      "name": "Debug Client",
+      "type": "pwa-chrome",
+      "request": "launch",
+      "cwd": "${workspaceFolder}/client",
+      "runtimeExecutable": "${execPath}",
+      "url": "http://localhost:5173",
+      "webRoot": "${workspaceFolder}/client"
+    }
+  ]
+}
+

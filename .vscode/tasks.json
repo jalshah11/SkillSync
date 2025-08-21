@@ -1,0 +1,27 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "server:dev",
+      "type": "npm",
+      "script": "dev",
+      "path": "server",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "client:dev",
+      "type": "npm",
+      "script": "dev",
+      "path": "client",
+      "group": "build",
+      "presentation": { "reveal": "always", "panel": "dedicated" }
+    },
+    {
+      "label": "dev:all",
+      "dependsOn": ["server:dev", "client:dev"],
+      "dependsOrder": "parallel"
+    }
+  ]
+}
+
