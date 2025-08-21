@@ -1,9 +1,10 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
-import ky from 'ky'
+import { useAuth } from '../context/AuthContext'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
+  const { register } = useAuth()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -15,8 +16,7 @@ export default function RegisterPage() {
     setError('')
     setLoading(true)
     try {
-      await ky.post('/api/auth/register', { json: { name, email, password }, credentials: 'include' }).json()
-      navigate('/login')
+      await register(name, email, password)
     } catch (err) {
       setError('Registration failed')
     } finally {

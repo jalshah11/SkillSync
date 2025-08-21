@@ -20,6 +20,11 @@ export default function Dashboard() {
 
   useEffect(() => {
     if (user) {
+      const hasAnySkills = (user.teachSkills && user.teachSkills.length) || (user.learnSkills && user.learnSkills.length)
+      if (!hasAnySkills) {
+        navigate('/onboarding')
+        return
+      }
       setName(user.name || '')
       setBio(user.bio || '')
       setTeachSkills((user.teachSkills || []).join(', '))
