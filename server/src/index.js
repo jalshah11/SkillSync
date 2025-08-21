@@ -8,6 +8,8 @@ import { Server as SocketIOServer } from 'socket.io';
 import authRoutes from './routes/auth.routes.js';
 import aiRoutes from './routes/ai.routes.js';
 import calendarRoutes from './routes/calendar.routes.js';
+import userRoutes from './routes/user.routes.js';
+import matchRoutes from './routes/match.routes.js';
 
 dotenv.config();
 
@@ -26,6 +28,8 @@ app.get('/health', (_req, res) => res.json({ status: 'ok' }));
 app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/calendar', calendarRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/match', matchRoutes);
 
 io.on('connection', (socket) => {
   socket.on('ping', () => socket.emit('pong'));

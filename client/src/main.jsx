@@ -5,15 +5,20 @@ import './index.css'
 import App from './App.jsx'
 import LoginPage from './pages/LoginPage.jsx'
 import RegisterPage from './pages/RegisterPage.jsx'
+import Dashboard from './pages/Dashboard.jsx'
+import { AuthProvider } from './context/AuthContext.jsx'
 
 const router = createBrowserRouter([
   { path: '/', element: <App /> },
   { path: '/login', element: <LoginPage /> },
   { path: '/register', element: <RegisterPage /> },
+  { path: '/dashboard', element: <Dashboard /> },
 ])
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
-    <RouterProvider router={router} />
+    <AuthProvider>
+      <RouterProvider router={router} />
+    </AuthProvider>
   </StrictMode>,
 )
