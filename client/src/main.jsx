@@ -9,6 +9,7 @@ import Dashboard from './pages/Dashboard.jsx'
 import Layout from './layouts/Layout.jsx'
 import Onboarding from './pages/Onboarding.jsx'
 import Sessions from './pages/Sessions.jsx'
+import SessionChat from './pages/SessionChat.jsx'
 
 const router = createBrowserRouter([
   {
@@ -20,6 +21,7 @@ const router = createBrowserRouter([
       { path: '/onboarding', element: <Onboarding /> },
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/sessions', element: <Sessions /> },
+      { path: '/sessions/:id/chat', element: <SessionChat /> },
     ],
   },
 ])

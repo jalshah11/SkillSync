@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import { api } from '../lib/api'
 import { useAuth } from '../context/AuthContext'
+import { Link } from 'react-router-dom'
 
 export default function Sessions() {
   const { user, loading } = useAuth()
@@ -45,6 +46,9 @@ export default function Sessions() {
                     <button onClick={() => accept(s._id)} className="px-3 py-1 bg-green-600 text-white rounded">Accept</button>
                     <button onClick={() => decline(s._id)} className="px-3 py-1 bg-red-600 text-white rounded">Decline</button>
                   </>
+                )}
+                {s.status === 'accepted' && (
+                  <Link to={`/sessions/${s._id}/chat`} className="px-3 py-1 bg-blue-600 text-white rounded">Open Chat</Link>
                 )}
               </div>
             </li>
