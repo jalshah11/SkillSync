@@ -1,0 +1,56 @@
+import { useEffect, useState } from 'react'
+import { api } from '../lib/api'
+import { useAuth } from '../context/AuthContext'
+
+export default function Sessions() {
+  const { user, loading } = useAuth()
+  const [sessions, setSessions] = useState([])
+
+  async function load() {
+    try {
+      const res = await api.get('sessions').json()
+      setSessions(res.sessions || [])
+    } catch { setSessions([]) }
+  }
+
+  async function accept(id) {
+    await api.post(`sessions/${id}/accept`).json()
+    await load()
+  }
+  async function decline(id) {
+    await api.post(`sessions/${id}/decline`).json()
+    await load()
+  }
+
+  useEffect(() => { if (!loading) load() }, [loading])
+
+  if (loading) return <div className="p-6">Loading...</div>
+
+  return (
+    <div className="max-w-4xl mx-auto p-6 bg-white rounded shadow">
+      <h1 className="text-2xl font-bold mb-4">Sessions</h1>
+      {sessions.length === 0 ? (
+        <p className="text-gray-600">No sessions yet.</p>
+      ) : (
+        <ul className="space-y-3">
+          {sessions.map(s => (
+            <li key={s._id} className="border rounded p-3 flex items-center justify-between">
+              <div>
+                <p className="font-medium">{s.skill} • {s.status}</p>
+                <p className="text-sm text-gray-600">Mentor: {s.mentor?.name} • Learner: {s.learner?.name}</p>
+              </div>
+              <div className="flex gap-2">
+                {user && s.status === 'pending' && String(s.mentor?._id) === String(user.id) && (
+                  <>
+                    <button onClick={() => accept(s._id)} className="px-3 py-1 bg-green-600 text-white rounded">Accept</button>
+                    <button onClick={() => decline(s._id)} className="px-3 py-1 bg-red-600 text-white rounded">Decline</button>
+                  </>
+                )}
+              </div>
+            </li>
+          ))}
+        </ul>
+      )}
+    </div>
+  )
+}

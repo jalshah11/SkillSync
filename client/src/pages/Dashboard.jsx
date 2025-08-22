@@ -56,6 +56,15 @@ export default function Dashboard() {
     } finally { setSaving(false) }
   }
 
+  async function requestSession(mentorId, skill) {
+    try {
+      await api.post('sessions', { json: { mentorId, skill } }).json()
+      navigate('/sessions')
+    } catch (e) {
+      // no-op for now
+    }
+  }
+
   if (loading) return <div className="p-6">Loading...</div>
   if (!user) return null
 
@@ -102,7 +111,11 @@ export default function Dashboard() {
                   <p className="text-sm text-gray-600">Teaches: {(m.teachSkills||[]).join(', ')}</p>
                   <p className="text-sm text-gray-600">Learns: {(m.learnSkills||[]).join(', ')}</p>
                 </div>
-                <button className="text-blue-600 hover:underline">Request Session</button>
+                <div className="flex items-center gap-3">
+                  {(m.teachSkills||[]).slice(0,1).map(skill => (
+                    <button key={skill} onClick={() => requestSession(m._id, skill)} className="text-blue-600 hover:underline">Request {skill}</button>
+                  ))}
+                </div>
               </li>
             ))}
           </ul>
