@@ -1,0 +1,57 @@
+import Session from '../models/Session.js';
+import User from '../models/User.js';
+
+export async function createSessionRequest(req, res) {
+	try {
+		const { mentorId, skill, message } = req.body || {};
+		if (!mentorId || !skill) return res.status(400).json({ message: 'mentorId and skill required' });
+		if (String(mentorId) === String(req.user._id)) return res.status(400).json({ message: 'Cannot request yourself' });
+		const mentor = await User.findById(mentorId).lean();
+		if (!mentor) return res.status(404).json({ message: 'Mentor not found' });
+		const session = await Session.create({ mentor: mentorId, learner: req.user._id, skill, message });
+		return res.status(201).json(session);
+	} catch (err) {
+		return res.status(500).json({ message: 'Failed to create session' });
+	}
+}
+
+export async function listMySessions(req, res) {
+	const userId = req.user._id;
+	const sessions = await Session.find({ $or: [{ mentor: userId }, { learner: userId }] })
+		.sort({ updatedAt: -1 })
+		.populate('mentor', 'name avatarUrl')
+		.populate('learner', 'name avatarUrl')
+		.lean();
+	return res.json({ sessions });
+}
+
+export async function getSessionById(req, res) {
+	const session = await Session.findById(req.params.id)
+		.populate('mentor', 'name avatarUrl')
+		.populate('learner', 'name avatarUrl')
+		.lean();
+	if (!session) return res.status(404).json({ message: 'Not found' });
+	// authorization
+	if (String(session.mentor._id) !== String(req.user._id) && String(session.learner._id) !== String(req.user._id)) {
+		return res.status(403).json({ message: 'Forbidden' });
+	}
+	return res.json(session);
+}
+
+export async function acceptSession(req, res) {
+	const session = await Session.findById(req.params.id);
+	if (!session) return res.status(404).json({ message: 'Not found' });
+	if (String(session.mentor) !== String(req.user._id)) return res.status(403).json({ message: 'Only mentor can accept' });
+	session.status = 'accepted';
+	await session.save();
+	return res.json(session);
+}
+
+export async function declineSession(req, res) {
+	const session = await Session.findById(req.params.id);
+	if (!session) return res.status(404).json({ message: 'Not found' });
+	if (String(session.mentor) !== String(req.user._id)) return res.status(403).json({ message: 'Only mentor can decline' });
+	session.status = 'declined';
+	await session.save();
+	return res.json(session);
+}

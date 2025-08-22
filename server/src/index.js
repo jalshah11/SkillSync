@@ -10,6 +10,7 @@ import aiRoutes from './routes/ai.routes.js';
 import calendarRoutes from './routes/calendar.routes.js';
 import userRoutes from './routes/user.routes.js';
 import matchRoutes from './routes/match.routes.js';
+import sessionRoutes from './routes/session.routes.js';
 
 dotenv.config();
 
@@ -30,9 +31,20 @@ app.use('/api/ai', aiRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/match', matchRoutes);
+app.use('/api/sessions', sessionRoutes);
 
 io.on('connection', (socket) => {
   socket.on('ping', () => socket.emit('pong'));
+  socket.on('join:session', (sessionId) => {
+    if (typeof sessionId === 'string') {
+      socket.join(`session:${sessionId}`);
+    }
+  });
+  socket.on('chat:message', ({ sessionId, text, user }) => {
+    if (sessionId && text) {
+      io.to(`session:${sessionId}`).emit('chat:message', { sessionId, text, user, ts: Date.now() });
+    }
+  });
 });
 
 connectToDatabase().then(() => {
