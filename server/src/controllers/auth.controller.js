@@ -66,6 +66,7 @@ export async function me(req, res) {
 }
 
 export async function logout(_req, res) {
-	res.clearCookie(jwtCookieName, { path: '/' });
+	const isProd = process.env.NODE_ENV === 'production';
+	res.clearCookie(jwtCookieName, { path: '/', secure: isProd, sameSite: isProd ? 'none' : 'lax' });
 	return res.json({ ok: true });
 }

@@ -16,6 +16,7 @@ import adminRoutes from './routes/admin.routes.js';
 dotenv.config();
 
 const app = express();
+app.set('trust proxy', 1);
 const httpServer = http.createServer(app);
 const io = new SocketIOServer(httpServer, {
   cors: { origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true },
