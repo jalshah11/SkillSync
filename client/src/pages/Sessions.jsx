@@ -54,6 +54,7 @@ export default function Sessions() {
                   <div className="space-x-2">
                     <a href={`/api/calendar/sessions/${s._id}.ics`} className="text-sm text-blue-600 hover:underline">Add to Calendar (.ics)</a>
                     <Link to={`/video/${s._id}`} className="text-sm text-blue-600 hover:underline">Join Video</Link>
+                    <Link to={`/whiteboard/${s._id}`} className="text-sm text-blue-600 hover:underline">Open Whiteboard</Link>
                   </div>
                 )}
               </div>

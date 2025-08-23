@@ -53,6 +53,16 @@ io.on('connection', (socket) => {
       io.to(`session:${sessionId}`).emit('chat:message', { sessionId, text, user, ts: Date.now() });
     }
   });
+  socket.on('wb:stroke', ({ sessionId, stroke }) => {
+    if (sessionId && stroke) {
+      socket.to(`session:${sessionId}`).emit('wb:stroke', { stroke });
+    }
+  });
+  socket.on('wb:clear', ({ sessionId }) => {
+    if (sessionId) {
+      io.to(`session:${sessionId}`).emit('wb:clear');
+    }
+  });
 });
 
 connectToDatabase().then(() => {
