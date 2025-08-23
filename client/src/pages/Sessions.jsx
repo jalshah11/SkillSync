@@ -26,6 +26,10 @@ export default function Sessions() {
     await api.post(`sessions/${id}/complete`).json()
     await load()
   }
+  async function generateCert(id) {
+    await api.post(`sessions/${id}/certificate`).json()
+    await load()
+  }
 
   useEffect(() => { if (!loading) load() }, [loading])
 
@@ -43,6 +47,9 @@ export default function Sessions() {
               <div>
                 <p className="font-medium">{s.skill} • {s.status}</p>
                 <p className="text-sm text-gray-600">Mentor: {s.mentor?.name} • Learner: {s.learner?.name}</p>
+                {s.certificateUrl && (
+                  <a href={s.certificateUrl} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline">Download Certificate</a>
+                )}
               </div>
               <div className="flex gap-2">
                 {user && s.status === 'pending' && String(s.mentor?._id) === String(user.id) && (
@@ -56,6 +63,12 @@ export default function Sessions() {
                     <Link to={`/sessions/${s._id}/chat`} className="px-3 py-1 bg-blue-600 text-white rounded">Open Chat</Link>
                     <button onClick={() => complete(s._id)} className="px-3 py-1 bg-gray-700 text-white rounded">Mark Complete</button>
                   </>
+                )}
+                {s.status === 'completed' && !s.certificateUrl && (
+                  <button onClick={() => generateCert(s._id)} className="px-3 py-1 bg-purple-600 text-white rounded">Generate Certificate</button>
+                )}
+                {s.status === 'completed' && s.certificateUrl && (
+                  <a href={s.certificateUrl} target="_blank" rel="noreferrer" className="px-3 py-1 bg-purple-700 text-white rounded">Download Certificate</a>
                 )}
               </div>
             </li>

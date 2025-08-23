@@ -7,6 +7,7 @@ const sessionSchema = new mongoose.Schema({
 	message: { type: String },
 	status: { type: String, enum: ['pending', 'accepted', 'declined', 'completed'], default: 'pending' },
 	scheduledAt: { type: Date },
+	certificateUrl: { type: String },
 }, { timestamps: true });
 
 const Session = mongoose.model('Session', sessionSchema);

@@ -1,5 +1,8 @@
 import Session from '../models/Session.js';
 import User from '../models/User.js';
+import fs from 'fs';
+import path from 'path';
+import PDFDocument from 'pdfkit';
 
 export async function createSessionRequest(req, res) {
 	try {
@@ -78,4 +81,31 @@ export async function completeSession(req, res) {
 		await u.save();
 	}
 	return res.json({ ok: true });
+}
+
+export async function generateCertificate(req, res) {
+	const uploadsDir = process.env.UPLOAD_DIR || 'uploads';
+	const session = await Session.findById(req.params.id).populate('mentor', 'name').populate('learner', 'name');
+	if (!session) return res.status(404).json({ message: 'Not found' });
+	if (session.status !== 'completed') return res.status(400).json({ message: 'Session not completed' });
+	if (String(session.mentor._id) !== String(req.user._id) && String(session.learner._id) !== String(req.user._id)) {
+		return res.status(403).json({ message: 'Forbidden' });
+	}
+	const filename = `certificate-${session._id}.pdf`;
+	const filepath = path.join(uploadsDir, filename);
+	const doc = new PDFDocument({ size: 'A4', margin: 50 });
+	const stream = fs.createWriteStream(filepath);
+	doc.pipe(stream);
+	doc.fontSize(24).text('SkillSync Micro-Certificate', { align: 'center' });
+	doc.moveDown();
+	doc.fontSize(14).text(`This certifies that ${session.learner.name} completed a session on ${session.skill}`, { align: 'center' });
+	doc.moveDown();
+	doc.fontSize(12).text(`Mentor: ${session.mentor.name}`, { align: 'center' });
+	doc.moveDown();
+	doc.text(`Date: ${new Date().toLocaleDateString()}`, { align: 'center' });
+	doc.end();
+	await new Promise((resolve) => stream.on('finish', resolve));
+	session.certificateUrl = `/uploads/${filename}`;
+	await session.save();
+	return res.json({ certificateUrl: session.certificateUrl });
 }
