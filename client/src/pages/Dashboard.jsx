@@ -4,7 +4,7 @@ import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
 
 export default function Dashboard() {
-  const { user, loading, refresh } = useAuth()
+  const { user, loading, refresh, updateAvatar } = useAuth()
   const navigate = useNavigate()
 
   const [name, setName] = useState('')
@@ -65,6 +65,11 @@ export default function Dashboard() {
     }
   }
 
+  function onAvatarChange(e) {
+    const f = e.target.files?.[0]
+    if (f) updateAvatar(f)
+  }
+
   if (loading) return <div className="p-6">Loading...</div>
   if (!user) return null
 
@@ -77,6 +82,10 @@ export default function Dashboard() {
 
       <form onSubmit={saveProfile} className="bg-white rounded shadow p-4 space-y-4">
         <h2 className="text-lg font-semibold">Profile</h2>
+        <div className="flex items-center gap-4">
+          <img src={user.avatarUrl || ''} alt="avatar" className="w-12 h-12 rounded-full object-cover bg-gray-200" onError={(e)=>{e.currentTarget.style.visibility='hidden'}} />
+          <label className="text-sm">Upload avatar<input type="file" accept="image/*" className="ml-2" onChange={onAvatarChange} /></label>
+        </div>
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
             <label className="block text-sm font-medium mb-1">Name</label>

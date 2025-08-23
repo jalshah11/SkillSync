@@ -22,6 +22,10 @@ export default function Sessions() {
     await api.post(`sessions/${id}/decline`).json()
     await load()
   }
+  async function complete(id) {
+    await api.post(`sessions/${id}/complete`).json()
+    await load()
+  }
 
   useEffect(() => { if (!loading) load() }, [loading])
 
@@ -48,7 +52,10 @@ export default function Sessions() {
                   </>
                 )}
                 {s.status === 'accepted' && (
-                  <Link to={`/sessions/${s._id}/chat`} className="px-3 py-1 bg-blue-600 text-white rounded">Open Chat</Link>
+                  <>
+                    <Link to={`/sessions/${s._id}/chat`} className="px-3 py-1 bg-blue-600 text-white rounded">Open Chat</Link>
+                    <button onClick={() => complete(s._id)} className="px-3 py-1 bg-gray-700 text-white rounded">Mark Complete</button>
+                  </>
                 )}
               </div>
             </li>

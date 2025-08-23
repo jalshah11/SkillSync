@@ -37,9 +37,16 @@ export function AuthProvider({ children }) {
     navigate('/login')
   }
 
+  async function updateAvatar(file) {
+    const form = new FormData()
+    form.append('avatar', file)
+    await api.post('users/me/avatar', { body: form }).json()
+    await fetchMe()
+  }
+
   useEffect(() => { fetchMe() }, [])
 
-  const value = useMemo(() => ({ user, loading, login, register, logout, refresh: fetchMe }), [user, loading])
+  const value = useMemo(() => ({ user, loading, login, register, logout, refresh: fetchMe, updateAvatar }), [user, loading])
 
   return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>
 }
