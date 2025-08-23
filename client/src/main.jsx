@@ -10,6 +10,7 @@ import Layout from './layouts/Layout.jsx'
 import Onboarding from './pages/Onboarding.jsx'
 import Sessions from './pages/Sessions.jsx'
 import SessionChat from './pages/SessionChat.jsx'
+import Admin from './pages/Admin.jsx'
 
 const router = createBrowserRouter([
   {
@@ -22,6 +23,7 @@ const router = createBrowserRouter([
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/sessions', element: <Sessions /> },
       { path: '/sessions/:id/chat', element: <SessionChat /> },
+      { path: '/admin', element: <Admin /> },
     ],
   },
 ])

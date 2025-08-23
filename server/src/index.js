@@ -11,6 +11,7 @@ import calendarRoutes from './routes/calendar.routes.js';
 import userRoutes from './routes/user.routes.js';
 import matchRoutes from './routes/match.routes.js';
 import sessionRoutes from './routes/session.routes.js';
+import adminRoutes from './routes/admin.routes.js';
 
 dotenv.config();
 
@@ -33,6 +34,7 @@ app.use('/api/calendar', calendarRoutes);
 app.use('/api/users', userRoutes);
 app.use('/api/match', matchRoutes);
 app.use('/api/sessions', sessionRoutes);
+app.use('/api/admin', adminRoutes);
 
 io.on('connection', (socket) => {
   socket.on('ping', () => socket.emit('pong'));

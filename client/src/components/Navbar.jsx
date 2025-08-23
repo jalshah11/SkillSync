@@ -15,6 +15,9 @@ export default function Navbar() {
             <>
               <Link to="/dashboard" className="text-gray-700 hover:text-black">Dashboard</Link>
               <Link to="/sessions" className="text-gray-700 hover:text-black">Sessions</Link>
+              {(user.roles||[]).includes('admin') && (
+                <Link to="/admin" className="text-gray-700 hover:text-black">Admin</Link>
+              )}
               <button onClick={logout} className="text-red-600 hover:underline">Logout</button>
             </>
           ) : (
