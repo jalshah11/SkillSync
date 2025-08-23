@@ -50,6 +50,11 @@ export default function Sessions() {
                 {s.certificateUrl && (
                   <a href={s.certificateUrl} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline">Download Certificate</a>
                 )}
+                {(s.status === 'accepted' || s.status === 'completed') && (
+                  <div>
+                    <a href={`/api/calendar/sessions/${s._id}.ics`} className="text-sm text-blue-600 hover:underline">Add to Calendar (.ics)</a>
+                  </div>
+                )}
               </div>
               <div className="flex gap-2">
                 {user && s.status === 'pending' && String(s.mentor?._id) === String(user.id) && (

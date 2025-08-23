@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { api } from '../lib/api'
 
 export default function LoginPage() {
   const navigate = useNavigate()
@@ -9,6 +10,7 @@ export default function LoginPage() {
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
+  const [googleToken, setGoogleToken] = useState('')
 
   async function handleSubmit(e) {
     e.preventDefault()
@@ -20,6 +22,15 @@ export default function LoginPage() {
       setError('Login failed')
     } finally {
       setLoading(false)
+    }
+  }
+
+  async function loginWithGoogle() {
+    try {
+      await api.post('auth/google', { json: { idToken: googleToken } }).json()
+      navigate('/dashboard')
+    } catch {
+      setError('Google login failed')
     }
   }
 
@@ -40,6 +51,11 @@ export default function LoginPage() {
           {loading ? 'Logging in...' : 'Login'}
         </button>
       </form>
+      <div className="mt-6 space-y-2">
+        <label className="block text-sm font-medium">Google ID Token (for demo)</label>
+        <input className="w-full border rounded p-2" placeholder="Paste Google ID token" value={googleToken} onChange={e=>setGoogleToken(e.target.value)} />
+        <button onClick={loginWithGoogle} className="w-full bg-red-600 text-white py-2 rounded">Login with Google</button>
+      </div>
       <p className="mt-4 text-sm">No account? <Link to="/register" className="text-blue-600">Register</Link></p>
     </div>
   )
