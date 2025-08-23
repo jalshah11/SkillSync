@@ -55,3 +55,27 @@ export async function declineSession(req, res) {
 	await session.save();
 	return res.json(session);
 }
+
+export async function completeSession(req, res) {
+	const session = await Session.findById(req.params.id);
+	if (!session) return res.status(404).json({ message: 'Not found' });
+	// either user can mark complete
+	if (String(session.mentor) !== String(req.user._id) && String(session.learner) !== String(req.user._id)) {
+		return res.status(403).json({ message: 'Forbidden' });
+	}
+	session.status = 'completed';
+	await session.save();
+	// increment completedSessions for both and award simple badge thresholds
+	const mentor = await User.findById(session.mentor);
+	const learner = await User.findById(session.learner);
+	for (const u of [mentor, learner]) {
+		u.completedSessions = (u.completedSessions || 0) + 1;
+		const badges = new Set(u.badges || []);
+		if (u.completedSessions >= 1) badges.add('Getting Started');
+		if (u.completedSessions >= 5) badges.add('Active Learner');
+		if (u.completedSessions >= 10) badges.add('Mentor Star');
+		u.badges = Array.from(badges);
+		await u.save();
+	}
+	return res.json({ ok: true });
+}

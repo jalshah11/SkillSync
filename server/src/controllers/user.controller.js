@@ -39,3 +39,14 @@ export async function updateMyProfile(req, res) {
 	}
 }
 
+export async function uploadAvatar(req, res) {
+	try {
+		if (!req.file) return res.status(400).json({ message: 'No file uploaded' });
+		const publicPath = `/uploads/${req.file.filename}`;
+		const saved = await User.findByIdAndUpdate(req.user._id, { avatarUrl: publicPath }, { new: true });
+		return res.json({ avatarUrl: saved.avatarUrl });
+	} catch {
+		return res.status(500).json({ message: 'Upload failed' });
+	}
+}
+

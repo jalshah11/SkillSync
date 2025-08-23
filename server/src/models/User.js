@@ -10,6 +10,8 @@ const userSchema = new mongoose.Schema({
 	teachSkills: { type: [String], default: [] },
 	learnSkills: { type: [String], default: [] },
 	bio: { type: String },
+	badges: { type: [String], default: [] },
+	completedSessions: { type: Number, default: 0 },
 }, { timestamps: true });
 
 userSchema.methods.comparePassword = async function (password) {
