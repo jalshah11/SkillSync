@@ -2,10 +2,12 @@ import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
 import { api } from '../lib/api'
+import { useToast } from '../context/ToastContext'
 
 export default function LoginPage() {
   const navigate = useNavigate()
   const { login } = useAuth()
+  const { show } = useToast()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [loading, setLoading] = useState(false)
@@ -18,8 +20,10 @@ export default function LoginPage() {
     setLoading(true)
     try {
       await login(email, password)
+      show('Logged in', 'success')
     } catch (err) {
       setError('Login failed')
+      show('Login failed', 'error')
     } finally {
       setLoading(false)
     }
@@ -28,9 +32,11 @@ export default function LoginPage() {
   async function loginWithGoogle() {
     try {
       await api.post('auth/google', { json: { idToken: googleToken } }).json()
+      show('Logged in with Google', 'success')
       navigate('/dashboard')
     } catch {
       setError('Google login failed')
+      show('Google login failed', 'error')
     }
   }
 

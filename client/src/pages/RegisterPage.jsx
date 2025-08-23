@@ -1,10 +1,12 @@
 import { useState } from 'react'
 import { useNavigate, Link } from 'react-router-dom'
 import { useAuth } from '../context/AuthContext'
+import { useToast } from '../context/ToastContext'
 
 export default function RegisterPage() {
   const navigate = useNavigate()
   const { register } = useAuth()
+  const { show } = useToast()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
@@ -17,8 +19,10 @@ export default function RegisterPage() {
     setLoading(true)
     try {
       await register(name, email, password)
+      show('Account created. Please login.', 'success')
     } catch (err) {
       setError('Registration failed')
+      show('Registration failed', 'error')
     } finally {
       setLoading(false)
     }

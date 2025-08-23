@@ -11,6 +11,7 @@ export default function Navbar() {
         <button onClick={() => navigate('/')} className="text-xl font-bold">SkillSync</button>
         <nav className="flex items-center gap-4">
           <Link to="/" className="text-gray-700 hover:text-black">Home</Link>
+          <Link to="/study" className="text-gray-700 hover:text-black">Study Plan</Link>
           {user ? (
             <>
               <Link to="/dashboard" className="text-gray-700 hover:text-black">Dashboard</Link>
