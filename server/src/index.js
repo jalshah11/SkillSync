@@ -5,6 +5,8 @@ import dotenv from 'dotenv';
 import { connectToDatabase } from './config/db.js';
 import http from 'http';
 import { Server as SocketIOServer } from 'socket.io';
+import helmet from 'helmet';
+import rateLimit from 'express-rate-limit';
 import authRoutes from './routes/auth.routes.js';
 import aiRoutes from './routes/ai.routes.js';
 import calendarRoutes from './routes/calendar.routes.js';
@@ -23,13 +25,15 @@ const io = new SocketIOServer(httpServer, {
 });
 const PORT = process.env.PORT || 5000;
 
+app.use(helmet({ contentSecurityPolicy: false }));
 app.use(cors({ origin: process.env.CLIENT_URL || 'http://localhost:5173', credentials: true }));
 app.use(express.json());
 app.use(cookieParser());
 app.use('/uploads', express.static(process.env.UPLOAD_DIR || 'uploads'));
 
+const authLimiter = rateLimit({ windowMs: 15 * 60 * 1000, max: 100 });
+app.use('/api/auth', authLimiter, authRoutes);
 app.get('/health', (_req, res) => res.json({ status: 'ok' }));
-app.use('/api/auth', authRoutes);
 app.use('/api/ai', aiRoutes);
 app.use('/api/calendar', calendarRoutes);
 app.use('/api/users', userRoutes);

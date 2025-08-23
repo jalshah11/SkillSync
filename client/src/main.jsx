@@ -11,6 +11,7 @@ import Onboarding from './pages/Onboarding.jsx'
 import Sessions from './pages/Sessions.jsx'
 import SessionChat from './pages/SessionChat.jsx'
 import Admin from './pages/Admin.jsx'
+import NotFound from './pages/NotFound.jsx'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: '/sessions', element: <Sessions /> },
       { path: '/sessions/:id/chat', element: <SessionChat /> },
       { path: '/admin', element: <Admin /> },
+      { path: '*', element: <NotFound /> },
     ],
   },
 ])
