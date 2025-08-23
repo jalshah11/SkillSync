@@ -46,6 +46,7 @@ export async function acceptSession(req, res) {
 	if (!session) return res.status(404).json({ message: 'Not found' });
 	if (String(session.mentor) !== String(req.user._id)) return res.status(403).json({ message: 'Only mentor can accept' });
 	session.status = 'accepted';
+	if (!session.videoRoom) session.videoRoom = `skillsync-${session._id.toString()}`;
 	await session.save();
 	return res.json(session);
 }
@@ -108,4 +109,13 @@ export async function generateCertificate(req, res) {
 	session.certificateUrl = `/uploads/${filename}`;
 	await session.save();
 	return res.json({ certificateUrl: session.certificateUrl });
+}
+
+export async function getVideoInfo(req, res) {
+	const s = await Session.findById(req.params.id).lean();
+	if (!s) return res.status(404).json({ message: 'Not found' });
+	if (String(s.mentor) !== String(req.user._id) && String(s.learner) !== String(req.user._id)) {
+		return res.status(403).json({ message: 'Forbidden' });
+	}
+	return res.json({ room: s.videoRoom || `skillsync-${s._id.toString()}` });
 }

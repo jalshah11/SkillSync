@@ -1,12 +1,13 @@
 import { Router } from 'express';
 import { requireAuth } from '../middleware/auth.js';
-import { acceptSession, createSessionRequest, declineSession, getSessionById, listMySessions, completeSession, generateCertificate } from '../controllers/session.controller.js';
+import { acceptSession, createSessionRequest, declineSession, getSessionById, listMySessions, completeSession, generateCertificate, getVideoInfo } from '../controllers/session.controller.js';
 
 const router = Router();
 
 router.get('/', requireAuth, listMySessions);
 router.post('/', requireAuth, createSessionRequest);
 router.get('/:id', requireAuth, getSessionById);
+router.get('/:id/video', requireAuth, getVideoInfo);
 router.post('/:id/accept', requireAuth, acceptSession);
 router.post('/:id/decline', requireAuth, declineSession);
 router.post('/:id/complete', requireAuth, completeSession);

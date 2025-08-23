@@ -51,8 +51,9 @@ export default function Sessions() {
                   <a href={s.certificateUrl} target="_blank" rel="noreferrer" className="text-sm text-blue-600 hover:underline">Download Certificate</a>
                 )}
                 {(s.status === 'accepted' || s.status === 'completed') && (
-                  <div>
+                  <div className="space-x-2">
                     <a href={`/api/calendar/sessions/${s._id}.ics`} className="text-sm text-blue-600 hover:underline">Add to Calendar (.ics)</a>
+                    <Link to={`/video/${s._id}`} className="text-sm text-blue-600 hover:underline">Join Video</Link>
                   </div>
                 )}
               </div>

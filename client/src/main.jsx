@@ -12,6 +12,7 @@ import Sessions from './pages/Sessions.jsx'
 import SessionChat from './pages/SessionChat.jsx'
 import Admin from './pages/Admin.jsx'
 import NotFound from './pages/NotFound.jsx'
+import Video from './pages/Video.jsx'
 
 const router = createBrowserRouter([
   {
@@ -24,6 +25,7 @@ const router = createBrowserRouter([
       { path: '/dashboard', element: <Dashboard /> },
       { path: '/sessions', element: <Sessions /> },
       { path: '/sessions/:id/chat', element: <SessionChat /> },
+      { path: '/video/:id', element: <Video /> },
       { path: '/admin', element: <Admin /> },
       { path: '*', element: <NotFound /> },
     ],
