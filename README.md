@@ -1,57 +1,53 @@
 # SkillSync – AI-Powered Peer-to-Peer Learning Platform
 
-MERN stack app with JWT auth, skill matchmaking, onboarding, dashboard, sessions with accept/decline, per-session chat (Socket.IO), AI study plan stub/real (OpenAI), avatar uploads, and simple badges on session completion.
+MERN stack app with JWT auth, skill matchmaking, onboarding, dashboard, sessions with accept/decline, per-session chat (Socket.IO), AI study plan stub/real (OpenAI), avatar uploads, certificates, and badges.
 
 ## Prerequisites
 - Node.js 18+
 - npm 9+
 
-## Quick Start
-1. Clone and install
+## Quick Start (local)
+1. Install
 ```bash
-# from project root
 cd server && npm i
 cd ../client && npm i
 ```
-2. Configure env
-```bash
-# server/.env (or copy from .env.example)
+2. Env (server/.env)
+```
 PORT=5000
 CLIENT_URL=http://localhost:5173
 JWT_SECRET=dev_secret
 USE_MEMORY_DB=1
 ```
 3. Run
-- Separate terminals:
 ```bash
 # Terminal 1
 cd server && npm run dev
 # Terminal 2
 cd client && npm run dev
 ```
-- Or VS Code tasks: Terminal > Run Task… > dev:all
+Open http://localhost:5173
 
-4. Open
-- http://localhost:5173
+## Docker (server + client + Mongo)
+```bash
+docker compose up --build
+```
+- Client: http://localhost:8080
+- Server: http://localhost:5000
+- Update API CORS origin via `CLIENT_URL` in docker-compose.yml if you change ports
 
-## Core Flows
-- Auth: Register → Login (cookie-based session)
-- Onboarding: set teach/learn skills
-- Dashboard: edit profile, upload avatar, see matches
-- Sessions: request from matches, mentor accepts/declines, chat, mark complete (badges increment)
-- AI Study Plan: set `OPENAI_API_KEY` in `server/.env` for real responses; otherwise stub JSON
-
-## API (selected)
+## Selected API
 - Auth: `POST /api/auth/register`, `POST /api/auth/login`, `GET /api/auth/me`, `POST /api/auth/logout`
 - Users: `GET/PUT /api/users/me`, `POST /api/users/me/avatar`
 - Match: `GET /api/match/find`
-- Sessions: `GET/POST /api/sessions`, `GET /api/sessions/:id`, `POST /api/sessions/:id/{accept|decline|complete}`
+- Sessions: `GET/POST /api/sessions`, `GET /api/sessions/:id`, `POST /api/sessions/:id/{accept|decline|complete|certificate}`
 - AI: `POST /api/ai/study-plan`
+- Admin: `GET /api/admin/users`, `GET /api/admin/sessions`, `POST /api/admin/users/:id/toggle-admin`
 
 ## Notes
-- Dev DB defaults to in-memory. To use Mongo, set `MONGODB_URI` in `server/.env`.
-- Uploads are served at `/uploads/...`.
-- For Vite preview use `CLIENT_URL=http://localhost:4173`.
+- Dev DB defaults to in-memory; Docker uses Mongo.
+- Uploads are served from `/uploads/*`.
+- For real OpenAI responses, set `OPENAI_API_KEY` in `server/.env` (local) or as an env var in the server service.
 
 ## Next
 - Google OAuth + Calendar
